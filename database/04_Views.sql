@@ -1,6 +1,10 @@
 USE InvenTrackDB;
 GO
 
+SET QUOTED_IDENTIFIER ON;
+SET ANSI_NULLS ON;
+GO
+
 CREATE OR ALTER VIEW vw_ProductStock AS
 SELECT
     p.ProductId,

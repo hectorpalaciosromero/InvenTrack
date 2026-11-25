@@ -1,6 +1,10 @@
 USE InvenTrackDB;
 GO
 
+SET QUOTED_IDENTIFIER ON;
+SET ANSI_NULLS ON;
+GO
+
 -- Password: Admin123! (BCrypt hash)
 INSERT INTO Users (Username, PasswordHash, FullName, Email, Role)
 VALUES ('admin', '$2a$11$C02fBz.9MjY6GaVMrby/ouW8x4QwBOmoKns2Cprwy1M5iW.TKNsMi', 'Administrador del Sistema', 'admin@inventrackapp.com', 'Administrador');
