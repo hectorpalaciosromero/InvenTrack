@@ -125,15 +125,15 @@ database\05_SeedData.sql
 database\06_Triggers.sql
 ```
 
-O desde la terminal con `sqlcmd`:
+O desde la terminal con `sqlcmd` (el flag `-x` es necesario porque los hashes BCrypt contienen caracteres `$`):
 
 ```powershell
-sqlcmd -S localhost -f 65001 -i "database\01_CreateDatabase.sql"
-sqlcmd -S localhost -f 65001 -i "database\02_CreateTables.sql"
-sqlcmd -S localhost -f 65001 -i "database\03_StoredProcedures.sql"
-sqlcmd -S localhost -f 65001 -i "database\04_Views.sql"
-sqlcmd -S localhost -f 65001 -i "database\05_SeedData.sql"
-sqlcmd -S localhost -f 65001 -i "database\06_Triggers.sql"
+sqlcmd -S localhost -x -f 65001 -i "database\01_CreateDatabase.sql"
+sqlcmd -S localhost -x -f 65001 -i "database\02_CreateTables.sql"
+sqlcmd -S localhost -x -f 65001 -i "database\03_StoredProcedures.sql"
+sqlcmd -S localhost -x -f 65001 -i "database\04_Views.sql"
+sqlcmd -S localhost -x -f 65001 -i "database\05_SeedData.sql"
+sqlcmd -S localhost -x -f 65001 -i "database\06_Triggers.sql"
 ```
 
 ### 3. Verificar la base de datos
