@@ -6,7 +6,7 @@
 
 [![.NET 8](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
 [![WPF](https://img.shields.io/badge/WPF-Desktop-0078D4?logo=windows)](https://learn.microsoft.com/en-us/dotnet/desktop/wpf/)
-[![SQL Server](https://img.shields.io/badge/SQL_Server-LocalDB-CC2927?logo=microsoftsqlserver)](https://www.microsoft.com/sql-server)
+[![SQL Server](https://img.shields.io/badge/SQL_Server-2019+-CC2927?logo=microsoftsqlserver)](https://www.microsoft.com/sql-server)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 </div>
@@ -15,7 +15,7 @@
 
 ## Descripción
 
-Aplicación de escritorio desarrollada en **WPF (.NET 8)** con arquitectura **MVVM**, diseñada para la gestión integral de inventarios en entornos de comercio mayorista y minorista. Incluye un módulo de simulación de dispositivos de captura automática (RFID, QR, código de barras) preparado arquitectónicamente para la integración con hardware real, y generación visual de códigos de barras y QR en tiempo real con la librería **ZXing.Net**.
+Aplicación de escritorio desarrollada en **WPF (.NET 8)** con arquitectura **MVVM**, diseñada para la gestión integral de inventarios en entornos de comercio mayorista y minorista. Conecta directamente a **SQL Server** mediante autenticación integrada de Windows, con acceso a datos a través de stored procedures y el micro-ORM **Dapper**. Incluye un módulo de simulación de dispositivos de captura automática (RFID, QR, código de barras) preparado arquitectónicamente para la integración con hardware real, y generación visual de códigos de barras y QR en tiempo real con la librería **ZXing.Net**.
 
 ## Arquitectura
 
@@ -44,7 +44,7 @@ Aplicación de escritorio desarrollada en **WPF (.NET 8)** con arquitectura **MV
 | Lenguaje | C# | 12 |
 | Framework | .NET / WPF | 8.0 |
 | Patrón | MVVM | — |
-| Base de Datos | SQL Server LocalDB | 15.x |
+| Base de Datos | SQL Server | 2019+ |
 | Micro ORM | Dapper | 2.1.35 |
 | Hashing | BCrypt.Net-Next | 4.0.3 |
 | Códigos de Barras | ZXing.Net | 0.16.9 |
@@ -77,7 +77,7 @@ InvenTrack/
 ├── database/                 Scripts SQL
 │   ├── 01_CreateDatabase.sql
 │   ├── 02_CreateTables.sql      6 tablas con FK, CHECK, índices filtrados
-│   ├── 03_StoredProcedures.sql  18 stored procedures
+│   ├── 03_StoredProcedures.sql  24 stored procedures
 │   ├── 04_Views.sql             3 vistas
 │   ├── 05_SeedData.sql          Datos de prueba con hashes BCrypt reales
 │   └── 06_Triggers.sql          Trigger de auditoría de timestamps
@@ -99,7 +99,8 @@ InvenTrack/
 ## Requisitos Previos
 
 - [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
-- SQL Server LocalDB (incluido con Visual Studio) o SQL Server Express
+- [SQL Server 2019+](https://www.microsoft.com/sql-server) (Express, Developer o Standard)
+- [SQL Server Management Studio (SSMS)](https://learn.microsoft.com/sql/ssms/download-sql-server-management-studio-ssms)
 - [Visual Studio 2022+](https://visualstudio.microsoft.com/) con carga de trabajo "Desarrollo de escritorio .NET"
 
 ## Instalación y Ejecución
@@ -111,23 +112,34 @@ git clone https://github.com/hectorpalaciosromero/InvenTrack.git
 cd InvenTrack
 ```
 
-### 2. Iniciar LocalDB y ejecutar los scripts SQL
+### 2. Crear la base de datos en SQL Server
+
+Abrir **SSMS**, conectarse a `localhost` y ejecutar los scripts en orden:
+
+```
+database\01_CreateDatabase.sql
+database\02_CreateTables.sql
+database\03_StoredProcedures.sql
+database\04_Views.sql
+database\05_SeedData.sql
+database\06_Triggers.sql
+```
+
+O desde la terminal con `sqlcmd`:
 
 ```powershell
-sqllocaldb start MSSQLLocalDB
-
-sqlcmd -S "(localdb)\MSSQLLocalDB" -f 65001 -i "database\01_CreateDatabase.sql"
-sqlcmd -S "(localdb)\MSSQLLocalDB" -f 65001 -i "database\02_CreateTables.sql"
-sqlcmd -S "(localdb)\MSSQLLocalDB" -f 65001 -i "database\03_StoredProcedures.sql"
-sqlcmd -S "(localdb)\MSSQLLocalDB" -f 65001 -i "database\04_Views.sql"
-sqlcmd -S "(localdb)\MSSQLLocalDB" -f 65001 -i "database\05_SeedData.sql"
-sqlcmd -S "(localdb)\MSSQLLocalDB" -f 65001 -i "database\06_Triggers.sql"
+sqlcmd -S localhost -f 65001 -i "database\01_CreateDatabase.sql"
+sqlcmd -S localhost -f 65001 -i "database\02_CreateTables.sql"
+sqlcmd -S localhost -f 65001 -i "database\03_StoredProcedures.sql"
+sqlcmd -S localhost -f 65001 -i "database\04_Views.sql"
+sqlcmd -S localhost -f 65001 -i "database\05_SeedData.sql"
+sqlcmd -S localhost -f 65001 -i "database\06_Triggers.sql"
 ```
 
 ### 3. Verificar la base de datos
 
 ```powershell
-sqlcmd -S "(localdb)\MSSQLLocalDB" -d InvenTrackDB -Q "SELECT Username, Role FROM Users; SELECT COUNT(*) AS Productos FROM Products;"
+sqlcmd -S localhost -d InvenTrackDB -Q "SELECT Username, Role FROM Users; SELECT COUNT(*) AS Productos FROM Products;"
 ```
 
 ### 4. Compilar y ejecutar
@@ -139,17 +151,19 @@ dotnet run --project src/InvenTrack/InvenTrack
 
 O abrir `InvenTrack.sln` en Visual Studio y presionar **F5**.
 
-### Configuración alternativa (SQL Server Express)
+### Configuración de conexión
 
-Modificar la cadena de conexión en `src/InvenTrack/InvenTrack/appsettings.json`:
+La cadena de conexión se configura en `src/InvenTrack/InvenTrack/appsettings.json`:
 
 ```json
 {
   "ConnectionStrings": {
-    "InvenTrack": "Server=.\\SQLEXPRESS;Database=InvenTrackDB;Trusted_Connection=True;TrustServerCertificate=True;"
+    "InvenTrack": "Server=localhost;Database=InvenTrackDB;Trusted_Connection=True;TrustServerCertificate=True;"
   }
 }
 ```
+
+> `Trusted_Connection=True` utiliza autenticación integrada de Windows, sin necesidad de almacenar credenciales. Para instancias con nombre, usar `Server=localhost\\SQLEXPRESS` o `Server=.\\NOMBRE_INSTANCIA`.
 
 ## Usuarios por Defecto
 
@@ -169,7 +183,7 @@ Modificar la cadena de conexión en `src/InvenTrack/InvenTrack/appsettings.json`
 - **StockMovements**: Registro transaccional de movimientos de inventario
 - **ScanEvents**: Bitácora de eventos de escaneo para auditoría
 
-### Stored Procedures (18)
+### Stored Procedures (24)
 
 Toda la lógica de acceso a datos se ejecuta mediante stored procedures, incluyendo `sp_CreateStockMovement` con transacciones explícitas para garantizar la integridad del stock.
 
@@ -186,7 +200,22 @@ Toda la lógica de acceso a datos se ejecuta mediante stored procedures, incluye
 - **Patrón Singleton** en servicios de autenticación y navegación
 - **IDisposable** en ViewModels con limpieza de suscripciones Mediator
 - Compatible con **lectores USB de código de barras** (modo HID) sin configuración adicional
+- **Cadena de conexión externalizada** en `appsettings.json` con soporte para múltiples entornos
+
+## Despliegue en Producción
+
+Para apuntar a un servidor SQL Server en red, solo se requiere modificar `appsettings.json`:
+
+```json
+{
+  "ConnectionStrings": {
+    "InvenTrack": "Server=192.168.1.100;Database=InvenTrackDB;Trusted_Connection=True;TrustServerCertificate=True;"
+  }
+}
+```
+
+No se requieren cambios en el código fuente. La arquitectura separa completamente la configuración de conexión de la lógica de acceso a datos.
 
 ## Licencia
 
-Este proyecto es de uso académico y profesional. Desarrollado por **Héctor Palacios Romero**.
+Este proyecto está bajo la [Licencia MIT](LICENSE). Desarrollado por **Héctor Palacios Romero**.
