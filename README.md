@@ -17,6 +17,38 @@
 
 Aplicación de escritorio desarrollada en **WPF (.NET 8)** con arquitectura **MVVM**, diseñada para la gestión integral de inventarios en entornos de comercio mayorista y minorista. Conecta directamente a **SQL Server** mediante autenticación integrada de Windows, con acceso a datos a través de stored procedures y el micro-ORM **Dapper**. Incluye un módulo de simulación de dispositivos de captura automática (RFID, QR, código de barras) preparado arquitectónicamente para la integración con hardware real, y generación visual de códigos de barras y QR en tiempo real con la librería **ZXing.Net**.
 
+## Capturas de Pantalla
+
+<div align="center">
+
+| Login | Dashboard |
+|:---:|:---:|
+| ![Login](docs/screenshots/01_login.png) | ![Dashboard](docs/screenshots/02_dashboard.png) |
+
+| Gestión de Productos | Formulario de Producto |
+|:---:|:---:|
+| ![Productos](docs/screenshots/03_productos.png) | ![Formulario](docs/screenshots/06_producto_form.png) |
+
+| Simulador de Captura | Reportes |
+|:---:|:---:|
+| ![Scanner](docs/screenshots/04_scanner.png) | ![Reportes](docs/screenshots/05_reportes.png) |
+
+| Historial de Movimientos | Gestión de Usuarios |
+|:---:|:---:|
+| ![Movimientos](docs/screenshots/07_movimientos.png) | ![Usuarios](docs/screenshots/08_usuarios.png) |
+
+<details>
+<summary><strong>Vista de Operario (RBAC)</strong></summary>
+<br>
+
+![Operario](docs/screenshots/09_operario.png)
+
+*El rol Operario no tiene acceso al módulo de Usuarios ni a las acciones de crear/editar/eliminar productos.*
+
+</details>
+
+</div>
+
 ## Arquitectura
 
 ```
