@@ -31,7 +31,7 @@ public class MovementListViewModel : ViewModelBase
         RefreshCommand = new RelayCommand(_ => LoadData());
         ClearFilterCommand = new RelayCommand(_ => ClearFilters());
 
-        Mediator.Subscribe(MediatorChannels.StockChanged, _ => LoadData());
+        Subscribe(MediatorChannels.StockChanged, _ => LoadData());
         LoadData();
     }
 

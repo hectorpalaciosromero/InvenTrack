@@ -17,7 +17,10 @@ public class MainViewModel : ViewModelBase
         get => _currentView;
         set
         {
-            SetProperty(ref _currentView, value);
+            if (ReferenceEquals(_currentView, value)) return;
+            _currentView?.Dispose();
+            _currentView = value;
+            OnPropertyChanged();
             OnPropertyChanged(nameof(IsDashboard));
             OnPropertyChanged(nameof(IsProducts));
             OnPropertyChanged(nameof(IsScanner));
@@ -66,7 +69,7 @@ public class MainViewModel : ViewModelBase
         NavigateCommand = new RelayCommand(ExecuteNavigate);
         LogoutCommand = new RelayCommand(ExecuteLogout);
 
-        Mediator.Subscribe(MediatorChannels.NavigateTo, data => ExecuteNavigate(data));
+        Subscribe(MediatorChannels.NavigateTo, data => ExecuteNavigate(data));
 
         CurrentView = new DashboardViewModel();
     }

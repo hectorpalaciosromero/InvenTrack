@@ -43,7 +43,7 @@ public class ProductListViewModel : ViewModelBase
         LoadCategories();
         LoadData();
 
-        Mediator.Subscribe(MediatorChannels.ProductUpdated, _ => LoadData());
+        Subscribe(MediatorChannels.ProductUpdated, _ => LoadData());
     }
 
     private void LoadCategories()

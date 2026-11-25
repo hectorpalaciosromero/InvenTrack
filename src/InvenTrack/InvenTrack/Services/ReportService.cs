@@ -38,7 +38,7 @@ public class ReportService
 
     public string GenerateMovementReport(DateTime from, DateTime to)
     {
-        var movements = _movementRepository.GetAll(from, to);
+        var movements = _movementRepository.GetAll(from, to.Date.AddDays(1));
         var sb = new StringBuilder();
 
         sb.AppendLine("REPORTE DE MOVIMIENTOS");

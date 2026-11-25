@@ -1,4 +1,3 @@
-using System.IO;
 using System.Windows;
 using Microsoft.Extensions.Configuration;
 
@@ -13,7 +12,7 @@ public partial class App : Application
         base.OnStartup(e);
 
         Configuration = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
+            .SetBasePath(AppContext.BaseDirectory)
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .Build();
 
