@@ -21,10 +21,10 @@ public class StockMovementRepository
             commandType: CommandType.StoredProcedure);
     }
 
-    public int Create(Models.StockMovement movement)
+    public void Create(Models.StockMovement movement)
     {
         using var db = DatabaseConnection.Create();
-        return db.QuerySingle<int>(
+        db.Execute(
             "sp_CreateStockMovement",
             new
             {
