@@ -2,6 +2,7 @@ using InvenTrack.Core;
 using InvenTrack.Data;
 using InvenTrack.Models;
 using InvenTrack.Services;
+using Microsoft.Data.SqlClient;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
@@ -15,6 +16,7 @@ public class ProductFormViewModel : ViewModelBase
     private readonly BarcodeGeneratorService _barcodeService = new();
 
     private int _productId;
+    private string _originalCode = string.Empty;
     private string _code = string.Empty;
     private string _name = string.Empty;
     private string _description = string.Empty;
@@ -43,9 +45,28 @@ public class ProductFormViewModel : ViewModelBase
     public List<Category> Categories { get => _categories; set => SetProperty(ref _categories, value); }
     public string FormTitle { get => _formTitle; set => SetProperty(ref _formTitle, value); }
     public bool IsEditing { get => _isEditing; set => SetProperty(ref _isEditing, value); }
-    public bool ShowStockField => !IsEditing;
-    public BitmapSource? BarcodeImage { get => _barcodeImage; set => SetProperty(ref _barcodeImage, value); }
-    public BitmapSource? QRCodeImage { get => _qrCodeImage; set => SetProperty(ref _qrCodeImage, value); }
+    public string StockFieldLabel => IsEditing ? "Stock Actual (solo lectura)" : "Stock Inicial";
+    public bool HasNoPreview => BarcodeImage == null && QRCodeImage == null;
+
+    public BitmapSource? BarcodeImage
+    {
+        get => _barcodeImage;
+        set
+        {
+            SetProperty(ref _barcodeImage, value);
+            OnPropertyChanged(nameof(HasNoPreview));
+        }
+    }
+
+    public BitmapSource? QRCodeImage
+    {
+        get => _qrCodeImage;
+        set
+        {
+            SetProperty(ref _qrCodeImage, value);
+            OnPropertyChanged(nameof(HasNoPreview));
+        }
+    }
 
     public string Barcode
     {
@@ -88,6 +109,7 @@ public class ProductFormViewModel : ViewModelBase
         if (product == null) return;
 
         _productId = product.ProductId;
+        _originalCode = product.Code;
         Code = product.Code;
         Name = product.Name;
         Description = product.Description ?? string.Empty;
@@ -102,7 +124,7 @@ public class ProductFormViewModel : ViewModelBase
 
         IsEditing = true;
         FormTitle = "Editar Producto";
-        OnPropertyChanged(nameof(ShowStockField));
+        OnPropertyChanged(nameof(StockFieldLabel));
     }
 
     private void Save()
@@ -114,12 +136,38 @@ public class ProductFormViewModel : ViewModelBase
             return;
         }
 
+        if (string.IsNullOrWhiteSpace(Unit))
+        {
+            MessageBox.Show("Ingrese la unidad de medida (ej. UND, ROL, CAJ).",
+                "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        if (UnitPrice < 0 || CurrentStock < 0 || MinimumStock < 0)
+        {
+            MessageBox.Show("Precio unitario, stock y stock mínimo no pueden ser negativos.",
+                "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        string trimmedCode = Code.Trim();
+        if (!IsEditing || !string.Equals(trimmedCode, _originalCode, StringComparison.OrdinalIgnoreCase))
+        {
+            var existing = _productRepository.GetByCode(trimmedCode);
+            if (existing != null && existing.ProductId != _productId)
+            {
+                MessageBox.Show($"Ya existe un producto activo con el código '{trimmedCode}'.",
+                    "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+        }
+
         try
         {
             var product = new Product
             {
                 ProductId = _productId,
-                Code = Code.Trim(),
+                Code = trimmedCode,
                 Name = Name.Trim(),
                 Description = string.IsNullOrWhiteSpace(Description) ? null : Description.Trim(),
                 CategoryId = SelectedCategory.CategoryId,
@@ -129,7 +177,7 @@ public class ProductFormViewModel : ViewModelBase
                 Barcode = string.IsNullOrWhiteSpace(Barcode) ? null : Barcode.Trim(),
                 QRCode = string.IsNullOrWhiteSpace(QRCode) ? null : QRCode.Trim(),
                 RFIDTag = string.IsNullOrWhiteSpace(RFIDTag) ? null : RFIDTag.Trim(),
-                Unit = Unit,
+                Unit = Unit.Trim().ToUpperInvariant(),
                 IsActive = true
             };
 
@@ -140,6 +188,11 @@ public class ProductFormViewModel : ViewModelBase
 
             Mediator.Publish(MediatorChannels.ProductUpdated);
             Services.NavigationService.Instance.NavigateTo("Products");
+        }
+        catch (SqlException ex) when (ex.Number is 2627 or 2601)
+        {
+            MessageBox.Show("Ya existe un producto registrado con ese código (incluyendo productos inactivos).",
+                "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
         catch (Exception ex)
         {
@@ -155,11 +208,9 @@ public class ProductFormViewModel : ViewModelBase
 
     private void GenerateCode()
     {
-        string prefix = "PROD";
-        string number = new Random().Next(1000, 9999).ToString();
-        Code = $"{prefix}-{number}";
-
-        Barcode = $"750{new Random().Next(1000000, 9999999)}";
+        string number = Random.Shared.Next(1000, 9999).ToString();
+        Code = $"PROD-{number}";
+        Barcode = $"750123456{number}";
         QRCode = $"QR-{Code}";
         RFIDTag = $"RFID-TAG-{number}";
     }
