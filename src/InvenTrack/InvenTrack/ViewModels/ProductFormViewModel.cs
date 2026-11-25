@@ -1,8 +1,10 @@
 using InvenTrack.Core;
 using InvenTrack.Data;
 using InvenTrack.Models;
+using InvenTrack.Services;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media.Imaging;
 
 namespace InvenTrack.ViewModels;
 
@@ -10,6 +12,7 @@ public class ProductFormViewModel : ViewModelBase
 {
     private readonly ProductRepository _productRepository = new();
     private readonly CategoryRepository _categoryRepository = new();
+    private readonly BarcodeGeneratorService _barcodeService = new();
 
     private int _productId;
     private string _code = string.Empty;
@@ -26,6 +29,8 @@ public class ProductFormViewModel : ViewModelBase
     private List<Category> _categories = [];
     private string _formTitle = "Nuevo Producto";
     private bool _isEditing;
+    private BitmapSource? _barcodeImage;
+    private BitmapSource? _qrCodeImage;
 
     public string Code { get => _code; set => SetProperty(ref _code, value); }
     public string Name { get => _name; set => SetProperty(ref _name, value); }
@@ -34,14 +39,35 @@ public class ProductFormViewModel : ViewModelBase
     public decimal UnitPrice { get => _unitPrice; set => SetProperty(ref _unitPrice, value); }
     public int CurrentStock { get => _currentStock; set => SetProperty(ref _currentStock, value); }
     public int MinimumStock { get => _minimumStock; set => SetProperty(ref _minimumStock, value); }
-    public string Barcode { get => _barcode; set => SetProperty(ref _barcode, value); }
-    public string QRCode { get => _qrCode; set => SetProperty(ref _qrCode, value); }
-    public string RFIDTag { get => _rfidTag; set => SetProperty(ref _rfidTag, value); }
     public string Unit { get => _unit; set => SetProperty(ref _unit, value); }
     public List<Category> Categories { get => _categories; set => SetProperty(ref _categories, value); }
     public string FormTitle { get => _formTitle; set => SetProperty(ref _formTitle, value); }
     public bool IsEditing { get => _isEditing; set => SetProperty(ref _isEditing, value); }
     public bool ShowStockField => !IsEditing;
+    public BitmapSource? BarcodeImage { get => _barcodeImage; set => SetProperty(ref _barcodeImage, value); }
+    public BitmapSource? QRCodeImage { get => _qrCodeImage; set => SetProperty(ref _qrCodeImage, value); }
+
+    public string Barcode
+    {
+        get => _barcode;
+        set
+        {
+            SetProperty(ref _barcode, value);
+            RefreshBarcodePreview();
+        }
+    }
+
+    public string QRCode
+    {
+        get => _qrCode;
+        set
+        {
+            SetProperty(ref _qrCode, value);
+            RefreshQRPreview();
+        }
+    }
+
+    public string RFIDTag { get => _rfidTag; set => SetProperty(ref _rfidTag, value); }
 
     public ICommand SaveCommand { get; }
     public ICommand CancelCommand { get; }
@@ -136,5 +162,15 @@ public class ProductFormViewModel : ViewModelBase
         Barcode = $"750{new Random().Next(1000000, 9999999)}";
         QRCode = $"QR-{Code}";
         RFIDTag = $"RFID-TAG-{number}";
+    }
+
+    private void RefreshBarcodePreview()
+    {
+        BarcodeImage = _barcodeService.GenerateBarcode(_barcode);
+    }
+
+    private void RefreshQRPreview()
+    {
+        QRCodeImage = _barcodeService.GenerateQRCode(_qrCode);
     }
 }
