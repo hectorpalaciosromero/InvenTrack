@@ -1,6 +1,7 @@
 using InvenTrack.Core;
 using InvenTrack.Data;
 using InvenTrack.Models;
+using InvenTrack.Services;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
@@ -25,6 +26,7 @@ public class ProductListViewModel : ViewModelBase
     public Category? SelectedCategory { get => _selectedCategory; set { SetProperty(ref _selectedCategory, value); Search(); } }
     public Product? SelectedProduct { get => _selectedProduct; set => SetProperty(ref _selectedProduct, value); }
     public bool IsLoading { get => _isLoading; set => SetProperty(ref _isLoading, value); }
+    public bool IsAdmin => AuthenticationService.Instance.IsAdmin;
 
     public ICommand AddCommand { get; }
     public ICommand EditCommand { get; }
@@ -34,9 +36,9 @@ public class ProductListViewModel : ViewModelBase
 
     public ProductListViewModel()
     {
-        AddCommand = new RelayCommand(_ => OpenForm(null));
-        EditCommand = new RelayCommand(_ => OpenForm(SelectedProduct), _ => SelectedProduct != null);
-        DeleteCommand = new RelayCommand(_ => DeleteProduct(), _ => SelectedProduct != null);
+        AddCommand = new RelayCommand(_ => OpenForm(null), _ => IsAdmin);
+        EditCommand = new RelayCommand(_ => OpenForm(SelectedProduct), _ => SelectedProduct != null && IsAdmin);
+        DeleteCommand = new RelayCommand(_ => DeleteProduct(), _ => SelectedProduct != null && IsAdmin);
         RefreshCommand = new RelayCommand(_ => LoadData());
         ClearFilterCommand = new RelayCommand(_ => ClearFilters());
 

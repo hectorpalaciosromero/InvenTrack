@@ -181,10 +181,46 @@
                         <DataGrid ItemsSource="{Binding RecentMovements}" Style="{StaticResource DataGridStyle}"
                                   MaxHeight="280">
                             <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="Tipo" Width="80" SortMemberPath="Type">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border CornerRadius="4" Padding="6,2" HorizontalAlignment="Left">
+                                                <Border.Style>
+                                                    <Style TargetType="Border">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Type}" Value="1">
+                                                                <Setter Property="Background" Value="#D5F5E3"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Type}" Value="2">
+                                                                <Setter Property="Background" Value="#FADBD8"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Border.Style>
+                                                <TextBlock FontSize="11" FontWeight="SemiBold">
+                                                    <TextBlock.Style>
+                                                        <Style TargetType="TextBlock">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding Type}" Value="1">
+                                                                    <Setter Property="Text" Value="📥 Entrada"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Type}" Value="2">
+                                                                    <Setter Property="Text" Value="📤 Salida"/>
+                                                                </DataTrigger>
+                                                                <DataTrigger Binding="{Binding Type}" Value="4">
+                                                                    <Setter Property="Text" Value="⚙️ Ajuste"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBlock.Style>
+                                                </TextBlock>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
                                 <DataGridTextColumn Header="Producto" Binding="{Binding ProductName}" Width="*"/>
-                                <DataGridTextColumn Header="Cant." Binding="{Binding Quantity}" Width="55"/>
-                                <DataGridTextColumn Header="Método" Binding="{Binding CaptureMethod}" Width="75"/>
-                                <DataGridTextColumn Header="Fecha" Binding="{Binding CreatedAt, StringFormat='dd/MM HH:mm'}" Width="90"/>
+                                <DataGridTextColumn Header="Cant." Binding="{Binding Quantity}" Width="50"/>
+                                <DataGridTextColumn Header="Fecha" Binding="{Binding CreatedAt, StringFormat='dd/MM HH:mm'}" Width="85"/>
                             </DataGrid.Columns>
                         </DataGrid>
                     </StackPanel>
