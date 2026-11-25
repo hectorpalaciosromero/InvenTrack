@@ -53,6 +53,7 @@
                            Visibility="{Binding ErrorMessage, Converter={StaticResource BoolToVisibilityConverter}}"/>
 
                 <Button Content="Iniciar Sesión"
+                        IsDefault="True"
                         Style="{StaticResource PrimaryButtonStyle}"
                         Command="{Binding LoginCommand}"
                         CommandParameter="{Binding ElementName=PasswordBox, Path=Password}"

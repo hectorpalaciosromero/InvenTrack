@@ -12,6 +12,6 @@ public partial class LoginWindow : Window
 
     private void CloseButton_Click(object sender, RoutedEventArgs e)
     {
-        Application.Current.Shutdown();
+        Close();
     }
 }

@@ -11,28 +11,7 @@ public class ScannerSimulatorService
 
     public ScanResult SimulateScan(ScanType scanType)
     {
-        string scanValue = GenerateScanValue(scanType);
-        var product = _productRepository.GetByScanValue(scanValue);
-
-        var scanEvent = new ScanEvent
-        {
-            ScanValue = scanValue,
-            Type = scanType,
-            ProductId = product?.ProductId,
-            WasResolved = product != null,
-            UserId = AuthenticationService.Instance.CurrentUser?.UserId ?? 1
-        };
-
-        _scanEventRepository.Create(scanEvent);
-
-        return new ScanResult
-        {
-            ScanValue = scanValue,
-            ScanType = scanType,
-            Product = product,
-            WasResolved = product != null,
-            Timestamp = DateTime.Now
-        };
+        return ProcessManualScan(GenerateScanValue(scanType), scanType);
     }
 
     public ScanResult ProcessManualScan(string scanValue, ScanType scanType)

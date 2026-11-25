@@ -5,7 +5,7 @@
              xmlns:vm="clr-namespace:InvenTrack.ViewModels"
              xmlns:views="clr-namespace:InvenTrack.Views"
              xmlns:converters="clr-namespace:InvenTrack.Converters"
-             ShutdownMode="OnExplicitShutdown">
+             ShutdownMode="OnLastWindowClose">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
