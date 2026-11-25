@@ -21,6 +21,9 @@ public class UserManagementViewModel : ViewModelBase
     private string _newRole = "Operario";
     private bool _isFormVisible;
     private bool _isLoading;
+    private bool _isEditing;
+    private int _editingUserId;
+    private string _formTitle = "Nuevo Usuario";
 
     public ObservableCollection<User> Users { get => _users; set => SetProperty(ref _users, value); }
     public User? SelectedUser { get => _selectedUser; set => SetProperty(ref _selectedUser, value); }
@@ -30,9 +33,14 @@ public class UserManagementViewModel : ViewModelBase
     public string NewRole { get => _newRole; set => SetProperty(ref _newRole, value); }
     public bool IsFormVisible { get => _isFormVisible; set => SetProperty(ref _isFormVisible, value); }
     public bool IsLoading { get => _isLoading; set => SetProperty(ref _isLoading, value); }
+    public bool IsEditing { get => _isEditing; set { SetProperty(ref _isEditing, value); OnPropertyChanged(nameof(IsCreating)); OnPropertyChanged(nameof(SaveButtonText)); } }
+    public bool IsCreating => !IsEditing;
+    public string FormTitle { get => _formTitle; set => SetProperty(ref _formTitle, value); }
+    public string SaveButtonText => IsEditing ? "💾 Guardar Cambios" : "💾 Crear Usuario";
     public List<string> Roles { get; } = ["Operario", "Administrador"];
 
     public ICommand ShowFormCommand { get; }
+    public ICommand EditUserCommand { get; }
     public ICommand SaveUserCommand { get; }
     public ICommand CancelFormCommand { get; }
     public ICommand ToggleActiveCommand { get; }
@@ -41,6 +49,7 @@ public class UserManagementViewModel : ViewModelBase
     public UserManagementViewModel()
     {
         ShowFormCommand = new RelayCommand(_ => ShowForm());
+        EditUserCommand = new RelayCommand(_ => EditUser(), _ => SelectedUser != null);
         SaveUserCommand = new RelayCommand(SaveUser);
         CancelFormCommand = new RelayCommand(_ => HideForm());
         ToggleActiveCommand = new RelayCommand(_ => ToggleActive(), _ => SelectedUser != null);
@@ -69,6 +78,9 @@ public class UserManagementViewModel : ViewModelBase
 
     private void ShowForm()
     {
+        _editingUserId = 0;
+        IsEditing = false;
+        FormTitle = "Nuevo Usuario";
         NewUsername = string.Empty;
         NewFullName = string.Empty;
         NewEmail = string.Empty;
@@ -76,16 +88,51 @@ public class UserManagementViewModel : ViewModelBase
         IsFormVisible = true;
     }
 
+    private void EditUser()
+    {
+        if (SelectedUser == null) return;
+
+        _editingUserId = SelectedUser.UserId;
+        IsEditing = true;
+        FormTitle = $"Editar Usuario — {SelectedUser.Username}";
+        NewUsername = SelectedUser.Username;
+        NewFullName = SelectedUser.FullName;
+        NewEmail = SelectedUser.Email;
+        NewRole = SelectedUser.Role;
+        IsFormVisible = true;
+    }
+
     private void HideForm()
     {
         IsFormVisible = false;
+        IsEditing = false;
+        _editingUserId = 0;
     }
 
     private void SaveUser(object? parameter)
     {
-        if (string.IsNullOrWhiteSpace(NewUsername) || string.IsNullOrWhiteSpace(NewFullName))
+        if (string.IsNullOrWhiteSpace(NewFullName))
         {
-            MessageBox.Show("Complete los campos obligatorios: Usuario y Nombre completo.",
+            MessageBox.Show("Ingrese el nombre completo.",
+                "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        if (IsEditing)
+        {
+            UpdateExistingUser();
+        }
+        else
+        {
+            CreateNewUser(parameter);
+        }
+    }
+
+    private void CreateNewUser(object? parameter)
+    {
+        if (string.IsNullOrWhiteSpace(NewUsername))
+        {
+            MessageBox.Show("Ingrese el nombre de usuario.",
                 "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -119,6 +166,36 @@ public class UserManagementViewModel : ViewModelBase
         catch (Exception ex)
         {
             MessageBox.Show($"Error al crear usuario:\n{ex.Message}", "Error",
+                MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void UpdateExistingUser()
+    {
+        try
+        {
+            var original = _userRepository.GetById(_editingUserId);
+            if (original == null) return;
+
+            var user = new User
+            {
+                UserId = _editingUserId,
+                FullName = NewFullName.Trim(),
+                Email = NewEmail.Trim(),
+                Role = NewRole,
+                IsActive = original.IsActive
+            };
+
+            _userRepository.Update(user);
+            HideForm();
+            LoadData();
+
+            MessageBox.Show("Usuario actualizado exitosamente.", "Éxito",
+                MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error al actualizar usuario:\n{ex.Message}", "Error",
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }

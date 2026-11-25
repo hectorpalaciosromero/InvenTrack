@@ -6,7 +6,7 @@
         <Border Style="{StaticResource CardStyle}" Margin="0,0,0,16"
                 Visibility="{Binding IsFormVisible, Converter={StaticResource BoolToVisibilityConverter}}">
             <StackPanel>
-                <TextBlock Text="Nuevo Usuario" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,16"/>
+                <TextBlock Text="{Binding FormTitle}" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,16"/>
 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -21,7 +21,8 @@
 
                     <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,12">
                         <TextBlock Text="Usuario *" Style="{StaticResource LabelStyle}"/>
-                        <TextBox Text="{Binding NewUsername}" Style="{StaticResource TextBoxStyle}"/>
+                        <TextBox Text="{Binding NewUsername}" Style="{StaticResource TextBoxStyle}"
+                                 IsEnabled="{Binding IsCreating}"/>
                     </StackPanel>
 
                     <StackPanel Grid.Row="0" Grid.Column="1" Margin="10,0,0,12">
@@ -34,7 +35,8 @@
                         <TextBox Text="{Binding NewEmail}" Style="{StaticResource TextBoxStyle}"/>
                     </StackPanel>
 
-                    <StackPanel Grid.Row="1" Grid.Column="1" Margin="10,0,0,12">
+                    <StackPanel Grid.Row="1" Grid.Column="1" Margin="10,0,0,12"
+                                Visibility="{Binding IsCreating, Converter={StaticResource BoolToVisibilityConverter}}">
                         <TextBlock Text="Contraseña *" Style="{StaticResource LabelStyle}"/>
                         <PasswordBox x:Name="NewPasswordBox" Style="{StaticResource PasswordBoxStyle}"/>
                     </StackPanel>
@@ -50,7 +52,7 @@
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,16,0,0">
                     <Button Content="Cancelar" Command="{Binding CancelFormCommand}"
                             Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,12,0"/>
-                    <Button Content="💾 Crear Usuario"
+                    <Button Content="{Binding SaveButtonText}"
                             Command="{Binding SaveUserCommand}"
                             CommandParameter="{Binding ElementName=NewPasswordBox}"
                             Style="{StaticResource PrimaryButtonStyle}"/>
@@ -64,6 +66,9 @@
                     <TextBlock Text="Lista de Usuarios" FontSize="18" FontWeight="SemiBold"
                                VerticalAlignment="Center"/>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Content="✏️ Editar"
+                                Command="{Binding EditUserCommand}"
+                                Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,8,0"/>
                         <Button Content="🔑 Resetear Clave"
                                 Command="{Binding ResetPasswordCommand}"
                                 Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,8,0"/>
