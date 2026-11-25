@@ -33,12 +33,14 @@ public class ReportViewModel : ViewModelBase
     public bool ShowDateRange => SelectedReportType == "Movements";
 
     public ICommand GenerateCommand { get; }
-    public ICommand ExportCommand { get; }
+    public ICommand ExportTxtCommand { get; }
+    public ICommand ExportExcelCommand { get; }
 
     public ReportViewModel()
     {
         GenerateCommand = new RelayCommand(_ => GenerateReport());
-        ExportCommand = new RelayCommand(_ => ExportReport(), _ => !string.IsNullOrEmpty(ReportContent));
+        ExportTxtCommand = new RelayCommand(_ => ExportTxt(), _ => !string.IsNullOrEmpty(ReportContent));
+        ExportExcelCommand = new RelayCommand(_ => ExportExcel(), _ => !string.IsNullOrEmpty(ReportContent));
     }
 
     private void GenerateReport()
@@ -65,11 +67,11 @@ public class ReportViewModel : ViewModelBase
         }
     }
 
-    private void ExportReport()
+    private void ExportTxt()
     {
         var dialog = new SaveFileDialog
         {
-            Filter = "Archivo de texto (*.txt)|*.txt|CSV (*.csv)|*.csv",
+            Filter = "Archivo de texto (*.txt)|*.txt",
             FileName = $"Reporte_{SelectedReportType}_{DateTime.Now:yyyyMMdd_HHmm}",
             DefaultExt = ".txt"
         };
@@ -85,6 +87,42 @@ public class ReportViewModel : ViewModelBase
         catch (Exception ex)
         {
             MessageBox.Show($"Error al exportar:\n{ex.Message}", "Error",
+                MessageBoxButton.OK, MessageBoxImage.Error);
+        }
+    }
+
+    private void ExportExcel()
+    {
+        var dialog = new SaveFileDialog
+        {
+            Filter = "Libro de Excel (*.xlsx)|*.xlsx",
+            FileName = $"Reporte_{SelectedReportType}_{DateTime.Now:yyyyMMdd_HHmm}",
+            DefaultExt = ".xlsx"
+        };
+
+        if (dialog.ShowDialog() != true) return;
+
+        try
+        {
+            switch (SelectedReportType)
+            {
+                case "Stock":
+                    _reportService.ExportStockToExcel(dialog.FileName);
+                    break;
+                case "Movements":
+                    _reportService.ExportMovementsToExcel(dialog.FileName, FromDate, ToDate);
+                    break;
+                case "LowStock":
+                    _reportService.ExportLowStockToExcel(dialog.FileName);
+                    break;
+            }
+
+            MessageBox.Show($"Reporte Excel exportado exitosamente:\n{dialog.FileName}",
+                "Exportación", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error al exportar Excel:\n{ex.Message}", "Error",
                 MessageBoxButton.OK, MessageBoxImage.Error);
         }
     }
