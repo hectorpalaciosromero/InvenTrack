@@ -341,8 +341,6 @@ BEGIN
     INSERT INTO StockMovements (ProductId, WarehouseId, Type, Quantity, PreviousStock, NewStock, ReferenceDocument, Notes, CaptureMethod, UserId)
     VALUES (@ProductId, @WarehouseId, @Type, @Quantity, @PreviousStock, @NewStock, @ReferenceDocument, @Notes, @CaptureMethod, @UserId);
 
-    SELECT CAST(SCOPE_IDENTITY() AS INT);
-
     COMMIT TRANSACTION;
 END
 GO
