@@ -4,6 +4,7 @@ using InvenTrack.Models;
 using InvenTrack.Services;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace InvenTrack.ViewModels;
@@ -89,7 +90,7 @@ public class UserManagementViewModel : ViewModelBase
             return;
         }
 
-        string password = parameter as string ?? string.Empty;
+        string password = (parameter as PasswordBox)?.Password ?? string.Empty;
         if (string.IsNullOrWhiteSpace(password))
         {
             MessageBox.Show("Ingrese una contraseña.", "Validación",
