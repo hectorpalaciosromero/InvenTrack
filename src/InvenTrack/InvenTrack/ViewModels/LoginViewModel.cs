@@ -1,6 +1,7 @@
 using InvenTrack.Core;
 using InvenTrack.Services;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace InvenTrack.ViewModels;
@@ -40,7 +41,7 @@ public class LoginViewModel : ViewModelBase
     {
         ErrorMessage = string.Empty;
 
-        string password = parameter as string ?? string.Empty;
+        string password = (parameter as PasswordBox)?.Password ?? string.Empty;
 
         if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(password))
         {
