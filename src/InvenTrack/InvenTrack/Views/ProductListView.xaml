@@ -71,7 +71,7 @@
                     <DataGridTextColumn Header="Unidad" Binding="{Binding Unit}" Width="65"/>
                     <DataGridTextColumn Header="Barcode" Binding="{Binding Barcode}" Width="120"/>
                     <DataGridTextColumn Header="RFID" Binding="{Binding RFIDTag}" Width="120"/>
-                    <DataGridTemplateColumn Header="Acciones" Width="140">
+                    <DataGridTemplateColumn x:Name="ActionsColumn" Header="Acciones" Width="110">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal"

@@ -107,6 +107,13 @@ public class ScannerViewModel : ViewModelBase
     {
         if (ScannedProduct == null || SelectedWarehouse == null) return;
 
+        if (Quantity <= 0)
+        {
+            MessageBox.Show("La cantidad debe ser mayor a cero.",
+                "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
         if (SelectedMovementType == MovementType.Exit && Quantity > ScannedProduct.CurrentStock)
         {
             MessageBox.Show(
@@ -140,7 +147,8 @@ public class ScannerViewModel : ViewModelBase
                 _ => "Movimiento"
             };
 
-            ScanStatusMessage = $"{typeName} registrada: {Quantity} unidades de {ScannedProduct?.Name}";
+            string unitLabel = Quantity == 1 ? "unidad" : "unidades";
+            ScanStatusMessage = $"{typeName} registrada: {Quantity} {unitLabel} de {ScannedProduct?.Name}";
             ScanStatusSuccess = true;
 
             Mediator.Publish(MediatorChannels.StockChanged);

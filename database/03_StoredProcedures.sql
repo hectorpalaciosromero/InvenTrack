@@ -313,7 +313,15 @@ BEGIN
     DECLARE @PreviousStock INT;
     DECLARE @NewStock INT;
 
-    SELECT @PreviousStock = CurrentStock FROM Products WHERE ProductId = @ProductId;
+    SELECT @PreviousStock = CurrentStock
+    FROM Products WITH (UPDLOCK, ROWLOCK)
+    WHERE ProductId = @ProductId AND IsActive = 1;
+
+    IF @PreviousStock IS NULL
+    BEGIN
+        ROLLBACK TRANSACTION;
+        THROW 50002, 'Producto no encontrado o inactivo.', 1;
+    END
 
     SET @NewStock = CASE
         WHEN @Type IN (1, 4) THEN @PreviousStock + @Quantity

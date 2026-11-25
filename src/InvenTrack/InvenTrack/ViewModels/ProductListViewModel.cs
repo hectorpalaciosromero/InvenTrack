@@ -46,6 +46,7 @@ public class ProductListViewModel : ViewModelBase
         LoadData();
 
         Subscribe(MediatorChannels.ProductUpdated, _ => LoadData());
+        Subscribe(MediatorChannels.StockChanged, _ => LoadData());
     }
 
     private void LoadCategories()

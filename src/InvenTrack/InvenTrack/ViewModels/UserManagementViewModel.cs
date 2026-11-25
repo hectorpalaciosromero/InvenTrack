@@ -2,6 +2,7 @@ using InvenTrack.Core;
 using InvenTrack.Data;
 using InvenTrack.Models;
 using InvenTrack.Services;
+using Microsoft.Data.SqlClient;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -97,7 +98,7 @@ public class UserManagementViewModel : ViewModelBase
         FormTitle = $"Editar Usuario — {SelectedUser.Username}";
         NewUsername = SelectedUser.Username;
         NewFullName = SelectedUser.FullName;
-        NewEmail = SelectedUser.Email;
+        NewEmail = SelectedUser.Email ?? string.Empty;
         NewRole = SelectedUser.Role;
         IsFormVisible = true;
     }
@@ -137,10 +138,18 @@ public class UserManagementViewModel : ViewModelBase
             return;
         }
 
-        string password = (parameter as PasswordBox)?.Password ?? string.Empty;
-        if (string.IsNullOrWhiteSpace(password))
+        string trimmedUsername = NewUsername.Trim();
+        if (_userRepository.GetByUsername(trimmedUsername) != null)
         {
-            MessageBox.Show("Ingrese una contraseña.", "Validación",
+            MessageBox.Show($"El nombre de usuario '{trimmedUsername}' ya está registrado.",
+                "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        string password = (parameter as PasswordBox)?.Password ?? string.Empty;
+        if (string.IsNullOrWhiteSpace(password) || password.Length < 6)
+        {
+            MessageBox.Show("La contraseña debe tener al menos 6 caracteres.", "Validación",
                 MessageBoxButton.OK, MessageBoxImage.Warning);
             return;
         }
@@ -149,10 +158,10 @@ public class UserManagementViewModel : ViewModelBase
         {
             var user = new User
             {
-                Username = NewUsername.Trim(),
+                Username = trimmedUsername,
                 PasswordHash = AuthenticationService.Instance.HashPassword(password),
                 FullName = NewFullName.Trim(),
-                Email = NewEmail.Trim(),
+                Email = (NewEmail ?? string.Empty).Trim(),
                 Role = NewRole
             };
 
@@ -163,6 +172,11 @@ public class UserManagementViewModel : ViewModelBase
             MessageBox.Show("Usuario creado exitosamente.", "Éxito",
                 MessageBoxButton.OK, MessageBoxImage.Information);
         }
+        catch (SqlException ex) when (ex.Number is 2627 or 2601)
+        {
+            MessageBox.Show("El nombre de usuario ya existe en el sistema.",
+                "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+        }
         catch (Exception ex)
         {
             MessageBox.Show($"Error al crear usuario:\n{ex.Message}", "Error",
@@ -172,6 +186,13 @@ public class UserManagementViewModel : ViewModelBase
 
     private void UpdateExistingUser()
     {
+        if (_editingUserId == AuthenticationService.Instance.CurrentUser?.UserId && NewRole != "Administrador")
+        {
+            MessageBox.Show("No puede cambiar su propio rol de Administrador mientras tiene la sesión activa.",
+                "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
         try
         {
             var original = _userRepository.GetById(_editingUserId);
@@ -181,7 +202,7 @@ public class UserManagementViewModel : ViewModelBase
             {
                 UserId = _editingUserId,
                 FullName = NewFullName.Trim(),
-                Email = NewEmail.Trim(),
+                Email = (NewEmail ?? string.Empty).Trim(),
                 Role = NewRole,
                 IsActive = original.IsActive
             };
@@ -203,6 +224,13 @@ public class UserManagementViewModel : ViewModelBase
     private void ToggleActive()
     {
         if (SelectedUser == null) return;
+
+        if (SelectedUser.UserId == AuthenticationService.Instance.CurrentUser?.UserId)
+        {
+            MessageBox.Show("No puede deshabilitar su propio usuario mientras tiene la sesión activa.",
+                "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
 
         string action = SelectedUser.IsActive ? "deshabilitar" : "habilitar";
         var result = MessageBox.Show(

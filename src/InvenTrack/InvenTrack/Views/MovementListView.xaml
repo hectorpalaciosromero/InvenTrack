@@ -13,6 +13,15 @@
                     <TextBlock Text="Hasta" Style="{StaticResource LabelStyle}"/>
                     <DatePicker SelectedDate="{Binding ToDate}" Width="140" FontSize="13"/>
                 </StackPanel>
+                <StackPanel Margin="0,0,16,0">
+                    <TextBlock Text="Tipo" Style="{StaticResource LabelStyle}"/>
+                    <ComboBox ItemsSource="{Binding MovementTypes}"
+                              SelectedValue="{Binding SelectedType}"
+                              SelectedValuePath="Type"
+                              DisplayMemberPath="Label"
+                              Style="{StaticResource ComboBoxStyle}"
+                              Width="150"/>
+                </StackPanel>
                 <StackPanel Margin="0,0,16,0" VerticalAlignment="Bottom">
                     <Button Content="🔄 Actualizar" Command="{Binding RefreshCommand}"
                             Style="{StaticResource SecondaryButtonStyle}"/>

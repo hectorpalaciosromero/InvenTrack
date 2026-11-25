@@ -21,24 +21,29 @@
 
                     <StackPanel Grid.Row="0" Grid.Column="0" Margin="0,0,10,12">
                         <TextBlock Text="Usuario *" Style="{StaticResource LabelStyle}"/>
-                        <TextBox Text="{Binding NewUsername}" Style="{StaticResource TextBoxStyle}"
+                        <TextBox Text="{Binding NewUsername}" MaxLength="50"
+                                 Style="{StaticResource TextBoxStyle}"
                                  IsEnabled="{Binding IsCreating}"/>
                     </StackPanel>
 
                     <StackPanel Grid.Row="0" Grid.Column="1" Margin="10,0,0,12">
                         <TextBlock Text="Nombre Completo *" Style="{StaticResource LabelStyle}"/>
-                        <TextBox Text="{Binding NewFullName}" Style="{StaticResource TextBoxStyle}"/>
+                        <TextBox Text="{Binding NewFullName}" MaxLength="100"
+                                 Style="{StaticResource TextBoxStyle}"/>
                     </StackPanel>
 
                     <StackPanel Grid.Row="1" Grid.Column="0" Margin="0,0,10,12">
                         <TextBlock Text="Email" Style="{StaticResource LabelStyle}"/>
-                        <TextBox Text="{Binding NewEmail}" Style="{StaticResource TextBoxStyle}"/>
+                        <TextBox Text="{Binding NewEmail}" MaxLength="100"
+                                 Style="{StaticResource TextBoxStyle}"/>
                     </StackPanel>
 
                     <StackPanel Grid.Row="1" Grid.Column="1" Margin="10,0,0,12"
                                 Visibility="{Binding IsCreating, Converter={StaticResource BoolToVisibilityConverter}}">
                         <TextBlock Text="Contraseña *" Style="{StaticResource LabelStyle}"/>
-                        <PasswordBox x:Name="NewPasswordBox" Style="{StaticResource PasswordBoxStyle}"/>
+                        <PasswordBox x:Name="NewPasswordBox"
+                                     IsVisibleChanged="NewPasswordBox_IsVisibleChanged"
+                                     Style="{StaticResource PasswordBoxStyle}"/>
                     </StackPanel>
 
                     <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,0,10,0">

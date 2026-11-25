@@ -102,7 +102,7 @@ public class MainViewModel : ViewModelBase
             "Scanner"    => (new ScannerViewModel(), "Simulador de Captura"),
             "Movements"  => (new MovementListViewModel(), "Movimientos de Almacén"),
             "Reports"    => (new ReportViewModel(), "Reportes"),
-            "Users"      => (new UserManagementViewModel(), "Gestión de Usuarios"),
+            "Users" when IsAdmin => (new UserManagementViewModel(), "Gestión de Usuarios"),
             _ => (new DashboardViewModel(), "Dashboard")
         };
     }

@@ -37,6 +37,7 @@
                         </Grid.ColumnDefinitions>
 
                         <TextBox Grid.Column="0" Text="{Binding ManualScanValue, UpdateSourceTrigger=PropertyChanged}"
+                                 Tag="Escanear o ingresar código de barras, QR o RFID..."
                                  Style="{StaticResource TextBoxStyle}" Margin="0,0,8,0"
                                  KeyDown="ManualScanValue_KeyDown"/>
                         <Button Grid.Column="1" Content="🔍 Buscar"
@@ -114,7 +115,8 @@
                                 </StackPanel>
                                 <StackPanel Margin="0,0,16,0">
                                     <TextBlock Text="Cantidad" Style="{StaticResource LabelStyle}"/>
-                                    <TextBox Text="{Binding Quantity}" Style="{StaticResource TextBoxStyle}" Width="80"/>
+                                    <TextBox Text="{Binding Quantity, UpdateSourceTrigger=PropertyChanged}"
+                                             Style="{StaticResource TextBoxStyle}" Width="80"/>
                                 </StackPanel>
                                 <StackPanel>
                                     <TextBlock Text="Almacén" Style="{StaticResource LabelStyle}"/>

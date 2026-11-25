@@ -7,6 +7,8 @@ using System.Windows.Input;
 
 namespace InvenTrack.ViewModels;
 
+public record MovementTypeOption(MovementType? Type, string Label);
+
 public class MovementListViewModel : ViewModelBase
 {
     private readonly StockMovementRepository _movementRepository = new();
@@ -16,6 +18,15 @@ public class MovementListViewModel : ViewModelBase
     private DateTime _toDate = DateTime.Today;
     private MovementType? _selectedType;
     private bool _isLoading;
+
+    public List<MovementTypeOption> MovementTypes { get; } =
+    [
+        new(null, "Todos"),
+        new(MovementType.Entry, "Entrada"),
+        new(MovementType.Exit, "Salida"),
+        new(MovementType.Transfer, "Transferencia"),
+        new(MovementType.Adjustment, "Ajuste")
+    ];
 
     public ObservableCollection<StockMovement> Movements { get => _movements; set => SetProperty(ref _movements, value); }
     public DateTime FromDate { get => _fromDate; set { SetProperty(ref _fromDate, value); LoadData(); } }
@@ -40,7 +51,8 @@ public class MovementListViewModel : ViewModelBase
         IsLoading = true;
         try
         {
-            var data = _movementRepository.GetAll(_fromDate, _toDate.AddDays(1), type: _selectedType);
+            var (start, end) = _fromDate <= _toDate ? (_fromDate, _toDate) : (_toDate, _fromDate);
+            var data = _movementRepository.GetAll(start.Date, end.Date.AddDays(1), type: _selectedType);
             Movements = new ObservableCollection<StockMovement>(data);
         }
         catch (Exception ex)

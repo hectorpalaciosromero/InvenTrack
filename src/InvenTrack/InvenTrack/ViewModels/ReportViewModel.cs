@@ -45,6 +45,13 @@ public class ReportViewModel : ViewModelBase
 
     private void GenerateReport()
     {
+        if (ShowDateRange && FromDate > ToDate)
+        {
+            MessageBox.Show("La fecha inicial no puede ser mayor a la fecha final.",
+                "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
         IsLoading = true;
         try
         {
@@ -93,6 +100,13 @@ public class ReportViewModel : ViewModelBase
 
     private void ExportExcel()
     {
+        if (ShowDateRange && FromDate > ToDate)
+        {
+            MessageBox.Show("La fecha inicial no puede ser mayor a la fecha final.",
+                "Validación", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
         var dialog = new SaveFileDialog
         {
             Filter = "Libro de Excel (*.xlsx)|*.xlsx",
