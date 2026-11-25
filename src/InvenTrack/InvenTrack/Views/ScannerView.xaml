@@ -142,26 +142,28 @@
             <StackPanel>
                 <TextBlock Text="📋 Historial de Escaneos" FontSize="16" FontWeight="SemiBold"
                            Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,12"/>
-                <ItemsControl ItemsSource="{Binding ScanHistory}" MaxHeight="500">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1"
-                                    Padding="8,8" Margin="0,0,0,4">
-                                <StackPanel>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding ScanType}" FontWeight="SemiBold"
-                                                   FontSize="11" Foreground="{StaticResource AccentBrush}" Margin="0,0,8,0"/>
-                                        <TextBlock Text="{Binding Timestamp, StringFormat='HH:mm:ss'}"
-                                                   FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"/>
+                <ScrollViewer MaxHeight="500" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding ScanHistory}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1"
+                                        Padding="8,8" Margin="0,0,0,4">
+                                    <StackPanel>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding ScanType}" FontWeight="SemiBold"
+                                                       FontSize="11" Foreground="{StaticResource AccentBrush}" Margin="0,0,8,0"/>
+                                            <TextBlock Text="{Binding Timestamp, StringFormat='HH:mm:ss'}"
+                                                       FontSize="11" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding ScanValue}" FontSize="13" FontFamily="Consolas"/>
+                                        <TextBlock Text="{Binding StatusText}" FontSize="11"
+                                                   Foreground="{StaticResource TextSecondaryBrush}"/>
                                     </StackPanel>
-                                    <TextBlock Text="{Binding ScanValue}" FontSize="13" FontFamily="Consolas"/>
-                                    <TextBlock Text="{Binding StatusText}" FontSize="11"
-                                               Foreground="{StaticResource TextSecondaryBrush}"/>
-                                </StackPanel>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
             </StackPanel>
         </Border>
     </Grid>

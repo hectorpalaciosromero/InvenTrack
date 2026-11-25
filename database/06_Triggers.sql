@@ -7,9 +7,13 @@ AFTER UPDATE
 AS
 BEGIN
     SET NOCOUNT ON;
-    UPDATE Products
-    SET UpdatedAt = GETDATE()
-    FROM Products p
-    INNER JOIN inserted i ON p.ProductId = i.ProductId;
+
+    IF NOT UPDATE(UpdatedAt)
+    BEGIN
+        UPDATE p
+        SET p.UpdatedAt = GETDATE()
+        FROM Products p
+        INNER JOIN inserted i ON p.ProductId = i.ProductId;
+    END
 END
 GO

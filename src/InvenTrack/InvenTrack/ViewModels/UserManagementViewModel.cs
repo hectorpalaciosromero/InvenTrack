@@ -135,8 +135,15 @@ public class UserManagementViewModel : ViewModelBase
 
         try
         {
-            SelectedUser.IsActive = !SelectedUser.IsActive;
-            _userRepository.Update(SelectedUser);
+            var updated = new User
+            {
+                UserId = SelectedUser.UserId,
+                FullName = SelectedUser.FullName,
+                Email = SelectedUser.Email,
+                Role = SelectedUser.Role,
+                IsActive = !SelectedUser.IsActive
+            };
+            _userRepository.Update(updated);
             LoadData();
         }
         catch (Exception ex)

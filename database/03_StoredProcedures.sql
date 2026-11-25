@@ -12,7 +12,7 @@ BEGIN
     SET NOCOUNT ON;
     SELECT UserId, Username, PasswordHash, FullName, Email, Role, IsActive, CreatedAt, LastLogin
     FROM Users
-    WHERE Username = @Username AND IsActive = 1;
+    WHERE Username = @Username;
 END
 GO
 

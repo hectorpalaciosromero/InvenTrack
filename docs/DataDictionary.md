@@ -97,4 +97,4 @@ Log de todos los eventos de escaneo del simulador de captura.
 6. **Validación de método de captura**: CHECK constraint (CaptureMethod IN ('Manual', 'Barcode', 'QRCode', 'RFID'))
 7. **Eliminación lógica**: Productos y usuarios no se eliminan, se desactivan (IsActive = 0)
 8. **Trigger de timestamp**: Actualiza automáticamente UpdatedAt en Products al modificar
-9. **Trigger de validación**: Valida stock suficiente antes de registrar salidas
+9. **Validación transaccional de stock**: El procedimiento almacenado sp_CreateStockMovement valida stock suficiente antes de registrar salidas y revierte ante error
