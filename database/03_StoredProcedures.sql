@@ -48,7 +48,7 @@ BEGIN
     SET NOCOUNT ON;
     INSERT INTO Users (Username, PasswordHash, FullName, Email, Role)
     VALUES (@Username, @PasswordHash, @FullName, @Email, @Role);
-    SELECT SCOPE_IDENTITY();
+    SELECT CAST(SCOPE_IDENTITY() AS INT);
 END
 GO
 
@@ -102,7 +102,7 @@ BEGIN
     SET NOCOUNT ON;
     INSERT INTO Categories (Name, Description)
     VALUES (@Name, @Description);
-    SELECT SCOPE_IDENTITY();
+    SELECT CAST(SCOPE_IDENTITY() AS INT);
 END
 GO
 
@@ -214,7 +214,7 @@ BEGIN
     SET NOCOUNT ON;
     INSERT INTO Products (Code, Name, Description, CategoryId, UnitPrice, CurrentStock, MinimumStock, Barcode, QRCode, RFIDTag, Unit)
     VALUES (@Code, @Name, @Description, @CategoryId, @UnitPrice, @CurrentStock, @MinimumStock, @Barcode, @QRCode, @RFIDTag, @Unit);
-    SELECT SCOPE_IDENTITY();
+    SELECT CAST(SCOPE_IDENTITY() AS INT);
 END
 GO
 
@@ -284,7 +284,7 @@ BEGIN
     SET NOCOUNT ON;
     INSERT INTO Warehouses (Name, Location)
     VALUES (@Name, @Location);
-    SELECT SCOPE_IDENTITY();
+    SELECT CAST(SCOPE_IDENTITY() AS INT);
 END
 GO
 
@@ -329,7 +329,7 @@ BEGIN
     INSERT INTO StockMovements (ProductId, WarehouseId, Type, Quantity, PreviousStock, NewStock, ReferenceDocument, Notes, CaptureMethod, UserId)
     VALUES (@ProductId, @WarehouseId, @Type, @Quantity, @PreviousStock, @NewStock, @ReferenceDocument, @Notes, @CaptureMethod, @UserId);
 
-    SELECT SCOPE_IDENTITY();
+    SELECT CAST(SCOPE_IDENTITY() AS INT);
 
     COMMIT TRANSACTION;
 END
@@ -397,7 +397,7 @@ BEGIN
     SET NOCOUNT ON;
     INSERT INTO ScanEvents (ScanValue, Type, ProductId, WasResolved, UserId)
     VALUES (@ScanValue, @Type, @ProductId, @WasResolved, @UserId);
-    SELECT SCOPE_IDENTITY();
+    SELECT CAST(SCOPE_IDENTITY() AS INT);
 END
 GO
 
