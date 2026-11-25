@@ -70,6 +70,9 @@ Registro transaccional de entradas, salidas, transferencias y ajustes. Control d
 ### Reportes
 Generación de reportes de stock actual, movimientos por período y alertas de stock bajo. Exportación a **Excel (.xlsx)** con formato profesional (encabezados, colores, bordes, fórmulas) y a texto plano (.txt).
 
+### Gestión de Usuarios
+Panel de administración de usuarios con creación de cuentas, asignación de roles, habilitación/deshabilitación de acceso y reseteo de contraseñas. Acceso exclusivo para el rol Administrador.
+
 ## Estructura del Proyecto
 
 ```
@@ -170,7 +173,7 @@ La cadena de conexión se configura en `src/InvenTrack/InvenTrack/appsettings.js
 | Usuario | Contraseña | Rol | Acceso |
 |---|---|---|---|
 | `admin` | `Admin123!` | Administrador | Acceso total a todos los módulos |
-| `operario` | `Oper123!` | Operario | Dashboard, Productos (lectura), Escáner, Movimientos |
+| `operario` | `Oper123!` | Operario | Dashboard, Productos (lectura), Escáner, Movimientos, Reportes |
 
 ## Base de Datos
 
