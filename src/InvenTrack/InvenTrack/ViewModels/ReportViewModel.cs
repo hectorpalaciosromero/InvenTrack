@@ -18,7 +18,15 @@ public class ReportViewModel : ViewModelBase
     private bool _isLoading;
 
     public string ReportContent { get => _reportContent; set => SetProperty(ref _reportContent, value); }
-    public string SelectedReportType { get => _selectedReportType; set => SetProperty(ref _selectedReportType, value); }
+    public string SelectedReportType
+    {
+        get => _selectedReportType;
+        set
+        {
+            SetProperty(ref _selectedReportType, value);
+            OnPropertyChanged(nameof(ShowDateRange));
+        }
+    }
     public DateTime FromDate { get => _fromDate; set => SetProperty(ref _fromDate, value); }
     public DateTime ToDate { get => _toDate; set => SetProperty(ref _toDate, value); }
     public bool IsLoading { get => _isLoading; set => SetProperty(ref _isLoading, value); }

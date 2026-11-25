@@ -73,6 +73,23 @@ public class MainViewModel : ViewModelBase
 
     private void ExecuteNavigate(object? parameter)
     {
+        if (parameter is ViewModelBase viewModel)
+        {
+            CurrentView = viewModel;
+            CurrentViewTitle = viewModel switch
+            {
+                DashboardViewModel => "Dashboard",
+                ProductListViewModel => "Productos",
+                ProductFormViewModel => "Producto",
+                ScannerViewModel => "Simulador de Captura",
+                MovementListViewModel => "Movimientos de Almacén",
+                ReportViewModel => "Reportes",
+                UserManagementViewModel => "Gestión de Usuarios",
+                _ => "InvenTrack"
+            };
+            return;
+        }
+
         string viewName = parameter as string ?? "Dashboard";
 
         (CurrentView, CurrentViewTitle) = viewName switch

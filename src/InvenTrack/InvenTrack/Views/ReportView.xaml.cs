@@ -12,28 +12,16 @@ public partial class ReportView : UserControl
 
     private void Report_Stock(object sender, RoutedEventArgs e)
     {
-        if (ViewModel != null)
-        {
-            ViewModel.SelectedReportType = "Stock";
-            ViewModel.OnPropertyChanged(nameof(ViewModel.ShowDateRange));
-        }
+        if (ViewModel != null) ViewModel.SelectedReportType = "Stock";
     }
 
     private void Report_Movements(object sender, RoutedEventArgs e)
     {
-        if (ViewModel != null)
-        {
-            ViewModel.SelectedReportType = "Movements";
-            ViewModel.OnPropertyChanged(nameof(ViewModel.ShowDateRange));
-        }
+        if (ViewModel != null) ViewModel.SelectedReportType = "Movements";
     }
 
     private void Report_LowStock(object sender, RoutedEventArgs e)
     {
-        if (ViewModel != null)
-        {
-            ViewModel.SelectedReportType = "LowStock";
-            ViewModel.OnPropertyChanged(nameof(ViewModel.ShowDateRange));
-        }
+        if (ViewModel != null) ViewModel.SelectedReportType = "LowStock";
     }
 }

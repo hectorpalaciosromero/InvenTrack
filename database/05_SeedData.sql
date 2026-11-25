@@ -3,11 +3,11 @@ GO
 
 -- Password: Admin123! (BCrypt hash)
 INSERT INTO Users (Username, PasswordHash, FullName, Email, Role)
-VALUES ('admin', '$2a$11$K8G5p1ZIWaeM5T5b6kR5XeV2YE2VGFK9xL3dUqNXME5ygS7y3hLi', 'Administrador del Sistema', 'admin@inventrackapp.com', 'Administrador');
+VALUES ('admin', '$2a$11$C02fBz.9MjY6GaVMrby/ouW8x4QwBOmoKns2Cprwy1M5iW.TKNsMi', 'Administrador del Sistema', 'admin@inventrackapp.com', 'Administrador');
 
 -- Password: Oper123! (BCrypt hash)
 INSERT INTO Users (Username, PasswordHash, FullName, Email, Role)
-VALUES ('operario', '$2a$11$L9H6q2AJXbfN6U6c7lS6YfW3ZF3WHGL0yM4eVrOYMF6zhT8z4iMKi', 'Operario General', 'operario@inventrackapp.com', 'Operario');
+VALUES ('operario', '$2a$11$fZSCykh2ilK/GXnslEJFp.fDZ/Fzb0nvyfc335Ux8UaoD7p3GKTFG', 'Operario General', 'operario@inventrackapp.com', 'Operario');
 
 INSERT INTO Categories (Name, Description) VALUES ('Electrónica', 'Dispositivos electrónicos y componentes');
 INSERT INTO Categories (Name, Description) VALUES ('Accesorios', 'Cables, fundas, protectores y accesorios varios');

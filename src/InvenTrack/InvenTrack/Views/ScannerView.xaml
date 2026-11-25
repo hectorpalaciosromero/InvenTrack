@@ -37,7 +37,8 @@
                         </Grid.ColumnDefinitions>
 
                         <TextBox Grid.Column="0" Text="{Binding ManualScanValue, UpdateSourceTrigger=PropertyChanged}"
-                                 Style="{StaticResource TextBoxStyle}" Margin="0,0,8,0"/>
+                                 Style="{StaticResource TextBoxStyle}" Margin="0,0,8,0"
+                                 KeyDown="ManualScanValue_KeyDown"/>
                         <Button Grid.Column="1" Content="🔍 Buscar"
                                 Command="{Binding ManualScanCommand}"
                                 Style="{StaticResource SecondaryButtonStyle}" Margin="0,0,8,0"/>
@@ -46,9 +47,18 @@
                                 Style="{StaticResource PrimaryButtonStyle}"/>
                     </Grid>
 
-                    <Border Background="{Binding ScanStatusSuccess, Converter={StaticResource StockLevelToColorConverter}, ConverterParameter='0'}"
-                            CornerRadius="6" Padding="12,10"
+                    <Border CornerRadius="6" Padding="12,10"
                             Visibility="{Binding ScanStatusMessage, Converter={StaticResource BoolToVisibilityConverter}}">
+                        <Border.Style>
+                            <Style TargetType="Border">
+                                <Setter Property="Background" Value="#E74C3C"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ScanStatusSuccess}" Value="True">
+                                        <Setter Property="Background" Value="#2ECC71"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Border.Style>
                         <TextBlock Text="{Binding ScanStatusMessage}" Foreground="White" FontWeight="SemiBold"/>
                     </Border>
                 </StackPanel>

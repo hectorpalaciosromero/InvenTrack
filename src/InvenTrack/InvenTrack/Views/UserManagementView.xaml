@@ -41,10 +41,9 @@
 
                     <StackPanel Grid.Row="2" Grid.Column="0" Margin="0,0,10,0">
                         <TextBlock Text="Rol" Style="{StaticResource LabelStyle}"/>
-                        <ComboBox SelectedItem="{Binding NewRole}" Style="{StaticResource ComboBoxStyle}">
-                            <ComboBoxItem Content="Operario"/>
-                            <ComboBoxItem Content="Administrador"/>
-                        </ComboBox>
+                        <ComboBox SelectedItem="{Binding NewRole}"
+                                  ItemsSource="{Binding Roles}"
+                                  Style="{StaticResource ComboBoxStyle}"/>
                     </StackPanel>
                 </Grid>
 

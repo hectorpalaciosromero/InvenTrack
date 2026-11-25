@@ -9,13 +9,6 @@ public class ScannerSimulatorService
     private readonly ScanEventRepository _scanEventRepository = new();
     private readonly Random _random = new();
 
-    private readonly Dictionary<ScanType, string[]> _prefixes = new()
-    {
-        [ScanType.Barcode] = ["750", "849", "890", "471"],
-        [ScanType.QRCode]  = ["QR-PROD-", "QR-INV-", "QR-WH-"],
-        [ScanType.RFID]    = ["RFID-TAG-", "RFID-EPC-", "E200"]
-    };
-
     public ScanResult SimulateScan(ScanType scanType)
     {
         string scanValue = GenerateScanValue(scanType);
@@ -69,10 +62,14 @@ public class ScannerSimulatorService
 
     private string GenerateScanValue(ScanType scanType)
     {
-        var prefixList = _prefixes[scanType];
-        string prefix = prefixList[_random.Next(prefixList.Length)];
-        string suffix = _random.Next(1, 999).ToString("D3");
-        return $"{prefix}{suffix}";
+        string suffix = _random.Next(1, 15).ToString("D3");
+        return scanType switch
+        {
+            ScanType.Barcode => $"7501234567{suffix}",
+            ScanType.QRCode  => $"QR-PROD-{suffix}",
+            ScanType.RFID    => $"RFID-TAG-{suffix}",
+            _                => suffix
+        };
     }
 }
 

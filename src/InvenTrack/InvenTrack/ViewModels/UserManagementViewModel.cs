@@ -29,6 +29,7 @@ public class UserManagementViewModel : ViewModelBase
     public string NewRole { get => _newRole; set => SetProperty(ref _newRole, value); }
     public bool IsFormVisible { get => _isFormVisible; set => SetProperty(ref _isFormVisible, value); }
     public bool IsLoading { get => _isLoading; set => SetProperty(ref _isLoading, value); }
+    public List<string> Roles { get; } = ["Operario", "Administrador"];
 
     public ICommand ShowFormCommand { get; }
     public ICommand SaveUserCommand { get; }

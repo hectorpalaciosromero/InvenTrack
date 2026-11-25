@@ -1,7 +1,6 @@
 using InvenTrack.Core;
 using InvenTrack.Data;
 using InvenTrack.Models;
-using InvenTrack.Services;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
@@ -87,10 +86,11 @@ public class ProductListViewModel : ViewModelBase
 
     private void OpenForm(Product? product)
     {
-        NavigationService.Instance.NavigateTo(product == null ? "ProductForm_New" : $"ProductForm_{product.ProductId}");
+        var formViewModel = new ProductFormViewModel();
+        if (product != null)
+            formViewModel.LoadProduct(product.ProductId);
 
-        Mediator.Publish(MediatorChannels.NavigateTo, "Products");
-        LoadData();
+        Mediator.Publish(MediatorChannels.NavigateTo, formViewModel);
     }
 
     private void DeleteProduct()

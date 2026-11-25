@@ -34,4 +34,10 @@ public partial class ScannerView : UserControl
     {
         if (ViewModel != null) ViewModel.SelectedScanType = type;
     }
+
+    private void ManualScanValue_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+    {
+        if (e.Key == System.Windows.Input.Key.Enter && ViewModel?.ManualScanCommand.CanExecute(null) == true)
+            ViewModel.ManualScanCommand.Execute(null);
+    }
 }
